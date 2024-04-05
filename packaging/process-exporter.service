@@ -1,0 +1,18 @@
+[Unit]
+Description=Process Exporter for Prometheus
+Documentation=https://github.com/etcd-io/etcd
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=root
+Type=simple
+EnvironmentFile=-/etc/default/process-exporter
+ExecStart=/usr/bin/process-exporter $OPTS
+KillMode=process
+Restart=always
+RestartSec=10s
+LimitNOFILE=40000
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,20 @@
+name: Daily Trivy Scan
+
+on:
+  schedule:
+    - cron: '1 0 * * *'  # 每天 UTC 执行
+
+jobs:
+  trivy_scan:
+    name: Trivy Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Scan with Trivy
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: fs
+          # format: 'sarif'
+
