@@ -47,7 +47,7 @@ vet:
 
 build:
 	@echo ">> building code"
-	CGO_ENABLED=0 GOOS=linux GOARCH=$(ARCH) go build -ldflags "$(VERSION_LDFLAGS)" -o $(BIN_DIR)/process-exporter -a -tags netgo cmd/process-exporter/main.go
+	CGO_ENABLED=0 GOOS=linux GOARCH=$(ARCH) go build -ldflags "$(VERSION_LDFLAGS)" -o $(BIN_DIR)/process-exporter -a cmd/process-exporter/main.go
 
 smoke:
 	@echo ">> smoke testing process-exporter"
@@ -61,7 +61,7 @@ integ:
 
 install:
 	@echo ">> installing binary"
-	cd cmd/process-exporter; CGO_ENABLED=0 go install -a -tags netgo
+	cd cmd/process-exporter; CGO_ENABLED=0 go install -a 
 
 docker-smoke:
 	docker run --rm -v $(PWD):/v -w /v $(IMAGE_NAME) $(SMOKE_TEST)

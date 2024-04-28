@@ -2,7 +2,7 @@ name: Daily Trivy Scan
 
 on:
   schedule:
-    - cron: '1 0 * * *'  # 每天 UTC 执行
+    - cron: '1 0 */2 * *'  # 每天 UTC 执行
 
 jobs:
   trivy_scan:
