@@ -12,7 +12,7 @@ ifeq ($(HOST_ARCH),loongarch64)
     HOST_ARCH=loong64
 endif
 
-ARCH ?= $(HOST_ARCH)
+GOARCH ?= $(HOST_ARCH)
 
 DOCKER_BUILDKIT ?= 1
 DOCKER_BUILD_ARGS ?= 

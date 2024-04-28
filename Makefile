@@ -14,8 +14,13 @@ BUILDUSER   ?= $(shell whoami)@$(shell hostname)
 REVISION    ?= $(shell git rev-parse HEAD)
 TAG_VERSION ?= $(shell git describe --tags --abbrev=0 2>/dev/null|| echo master)
 
-GO_IMG ?= golang:1.21
+GO_IMG ?= golang:1.23
 IMAGE_NAME ?= $(DOCKER_IMAGE_NAME):$(TAG_VERSION)
+
+ARCHS ?= linux/amd64 linux/arm64
+comma := ,
+space := $(empty) $(empty)
+PLATFORMS := $(subst $(space),$(comma),$(ARCHS))
 
 VERSION_LDFLAGS := \
   -X github.com/prometheus/common/version.Branch=$(BRANCH) \
@@ -47,7 +52,7 @@ vet:
 
 build:
 	@echo ">> building code"
-	CGO_ENABLED=0 GOOS=linux GOARCH=$(ARCH) go build -ldflags "$(VERSION_LDFLAGS)" -o $(BIN_DIR)/process-exporter -a cmd/process-exporter/main.go
+	CGO_ENABLED=0 GOOS=linux GOARCH=$(GOARCH) go build -ldflags "$(VERSION_LDFLAGS)" -o $(BIN_DIR)/process-exporter -a cmd/process-exporter/main.go
 
 smoke:
 	@echo ">> smoke testing process-exporter"
@@ -72,7 +77,7 @@ docker:
 
 dockerx:
 	@echo ">> buildx building docker image"
-	docker buildx build . $(DOCKER_BUILD_ARGS) -t $(IMAGE_NAME)
+	docker buildx build . --platform=$(PLATFORMS) $(DOCKER_BUILD_ARGS) -t $(IMAGE_NAME)
 
 dockertest:
 	docker run --rm -it -v `pwd`:/opt/process-exporter $(GO_IMG)  make -C /opt/process-exporter test
