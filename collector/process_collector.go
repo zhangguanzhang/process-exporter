@@ -2,6 +2,7 @@ package collector
 
 import (
 	"log"
+	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
 	common "github.com/zhangguanzhang/process-exporter"
@@ -155,13 +156,14 @@ type (
 	}
 
 	ProcessCollectorOption struct {
-		ProcFSPath  string
-		Children    bool
-		Threads     bool
-		GatherSMaps bool
-		Namer       common.MatchNamer
-		Recheck     bool
-		Debug       bool
+		ProcFSPath       string
+		Children         bool
+		Threads          bool
+		GatherSMaps      bool
+		Namer            common.MatchNamer
+		Recheck          bool
+		RecheckTimeLimit time.Duration
+		Debug            bool
 	}
 
 	NamedProcessCollector struct {
@@ -186,7 +188,7 @@ func NewProcessCollector(options ProcessCollectorOption) (*NamedProcessCollector
 	fs.GatherSMaps = options.GatherSMaps
 	p := &NamedProcessCollector{
 		scrapeChan: make(chan scrapeRequest),
-		Grouper:    proc.NewGrouper(options.Namer, options.Children, options.Threads, options.Recheck, options.Debug),
+		Grouper:    proc.NewGrouper(options.Namer, options.Children, options.Threads, options.Recheck, options.RecheckTimeLimit, options.Debug),
 		source:     fs,
 		threads:    options.Threads,
 		smaps:      options.GatherSMaps,
