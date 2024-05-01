@@ -6,7 +6,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: setup Go
         uses: actions/setup-go@v5
@@ -22,7 +24,7 @@ jobs:
       - run: make style
       - run: make vet
       - run: make test
-      - run: make build
+      - run: make build BRANCH=${{ github.head_ref || github.ref_name }}
       # - name: Setup Debug Session
       #   uses: csexton/debugger-action@master
       - run: make integ
